@@ -93,11 +93,11 @@ socket.on("sendFriendList",(data)=>{
     if(data[1].chat.length == 0){
         if(data[1].chatOrder[data[1].chatOrder.length -1] == $("#userName").text()){
             $("#friend-list").append(
-                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName + "'>" + "</p></div></div>"
+                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName + "'>" + "</p></div><div class='newChatnoti'></div></div>"
             )
         }else{
             $("#friend-list").append(
-                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName + "'>" + "</p></div></div>"
+                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName + "'>" + "</p></div><div class='newChatnoti'></div></div>"
             )
         }
     }
