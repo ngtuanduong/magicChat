@@ -1,0 +1,6 @@
+const userModel = require('../models/user');
+
+async function friendchoose(data) {
+    const sender = await userModel.findOne({userName:data.sender});
+    
+}
