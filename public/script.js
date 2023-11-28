@@ -142,7 +142,9 @@ socket.on("sendChattoOther",(data)=>{
     }
     console.log(data.receiver.userName);
     $("#demoText"+data.sender.userName).text(data.chatRoom.chat[data.chatRoom.chat.length-1]);
-
+    $("#demoText"+data.sender.userName).css({
+        "font-weight":"bold"
+    });
     
     });
     socket.on("sendChat",(data)=>{
@@ -254,10 +256,13 @@ $(document).ready(function(){
     });
     $("#friend-list").on('click',".friend",function(){
         console.log("button clicked");
-        
+        const receiver = $(this).find(".friendName").text();
+        $("#demoText"+ receiver).css({
+            "font-weight":"100"
+        });
         socket.emit("friendchoose",{
             sender:$("#userName").text(),
-            receiver: $(this).find(".friendName").text()
+            receiver: receiver
         });
         
     });
