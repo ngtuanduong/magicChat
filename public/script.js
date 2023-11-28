@@ -257,6 +257,9 @@ $(document).ready(function(){
             const text = $("#chat-box").val();
             const sender = $("#userName").text();
             const receiver = $("#currentFriendname").text();
+            if(receiver == ""){
+                alert("Please add friends and chat to them!");
+            }
             console.log(sender);
             console.log(receiver);
             socket.emit("chat",{
@@ -274,6 +277,9 @@ $(document).ready(function(){
         const text = $("#chat-box").val();
         const sender = $("#userName").text();
         const receiver = $("#currentFriendname").text();
+        if(receiver == ""){
+            alert("Please add friends and chat to them!");
+        }
         console.log(sender);
         console.log(receiver);
         socket.emit("chat",{
