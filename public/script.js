@@ -1,5 +1,5 @@
-// const socket = io("http://localhost:3000/");
-const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
+const socket = io("http://localhost:3000");
+// const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
 
 
 function displayImage() {
@@ -90,8 +90,7 @@ socket.on("sendFriendList",(data)=>{
     setTimeout(function() {
         $("#friendLoading").hide();
       }, 1000);
-    
-    if(!data[1].chat[data[1].chat.length -1]){
+    if(data[1].chat.length == 0){
         if(data[1].chatOrder[data[1].chatOrder.length -1] == $("#userName").text()){
             $("#friend-list").append(
                 "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName + "'>" + "</p></div></div>"
@@ -117,9 +116,7 @@ socket.on("sendFriendList",(data)=>{
 });
 
 socket.on("sendChattoOther",(data)=>{
-    console.log(data.receiver.userName);
-    console.log($("#currentFriendname").text());
-    if(data.sender == $("#currentFriendname").text()){
+    if(data.sender.userName == $("#currentFriendname").text()){
         $(".messages-box").html("");
         for(let i = 0 ; i < data.chatRoom.chatOrder.length;i++){
                 if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
@@ -132,7 +129,7 @@ socket.on("sendChattoOther",(data)=>{
                   } else {
                     $(".messages-box").append(
                       "<div class='message'><img class = 'avatar' src='" +
-                        data.receiver.avatarUrl +
+                        data.sender.avatarUrl +
                         "'>" +
                         "<span class = 'chatText'>" +
                         data.chatRoom.chat[i] +
@@ -140,8 +137,12 @@ socket.on("sendChattoOther",(data)=>{
                     );
                     $(".messages-box").scrollTop(100000000000000);
                   }
-            }
+        }
+
     }
+    console.log(data.receiver.userName);
+    $("#demoText"+data.sender.userName).text(data.chatRoom.chat[data.chatRoom.chat.length-1]);
+
     
     });
     socket.on("sendChat",(data)=>{
@@ -211,7 +212,6 @@ $(document).ready(function(){
     $("#loadingLogin").hide();
     $("#btnLogin").click(()=>{
         const userName = $("#userNameLogin").val();
-        console.log(userName);
         const password = $("#passwordLogin").val();
         if(password == ""){
             alert("Please enter your password!")
@@ -221,9 +221,7 @@ $(document).ready(function(){
         else{
             socket.emit("client-send-login",{userName:userName,password:password});
             $("#loadingLogin").show();
-        }
-        console.log(typeof password);
-       
+        }       
     });
 
     $("#logOutButton").click(()=>{
@@ -238,7 +236,6 @@ $(document).ready(function(){
         var key = e.which;
         if (key == 13) {
             // the enter key code
-            console.log($("#userName").text());
             socket.emit("addFriend", {
             sender:$("#userName").text(),
             receiver:$("#search").val()
@@ -274,14 +271,19 @@ $(document).ready(function(){
             if(receiver == ""){
                 alert("Please add friends and chat to them!");
             }
-            console.log(sender);
-            console.log(receiver);
-            socket.emit("chat",{
-                sender:sender,
-                receiver:receiver,
-                text:text
-            })
+            else if(text == ""){
+                return false;
+            }
+            else{
+                console.log(sender);
+                console.log(receiver);
+                socket.emit("chat",{
+                    sender:sender,
+                    receiver:receiver,
+                    text:text
+                });
             $("#chat-box").val("");
+            }
             e.preventDefault();
             return false;
         }
@@ -294,14 +296,20 @@ $(document).ready(function(){
         if(receiver == ""){
             alert("Please add friends and chat to them!");
         }
-        console.log(sender);
-        console.log(receiver);
-        socket.emit("chat",{
-            sender:sender,
-            receiver:receiver,
-            text:text
-        })
+        else if(text == ""){
+            return false;
+        }
+        else{
+            console.log(sender);
+            console.log(receiver);
+            socket.emit("chat",{
+                sender:sender,
+                receiver:receiver,
+                text:text
+            });
         $("#chat-box").val("");
+        }
+        
         return false;
     });
 

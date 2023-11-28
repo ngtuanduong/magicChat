@@ -112,10 +112,9 @@ io.on('connection',function(socket){
         }
     }
     socket.on("takeFriendReq",(data) => takeFriendReq(data));
+
     async function takeFriendlist (data){
         const currentUser = await userModel.findOne({userName:data});
-        
-        
         for(let i = 0;i < currentUser.friends.length;i++){
             let chatRoom = await chats.findOne(
                 {users:[data ,currentUser.friends[i]]});
@@ -123,8 +122,14 @@ io.on('connection',function(socket){
                 chatRoom = await chats.findOne(
                     {users:[currentUser.friends[i] ,data]});
             }
-            await socket.emit("sendFriendList",[await userModel.findOne(
-                {userName:currentUser.friends[i]}),chatRoom]);
+            if(currentUser.id == socket.id){
+                await socket.emit("sendFriendList",[await userModel.findOne(
+                    {userName:currentUser.friends[i]}),chatRoom]);
+            }
+            else{
+                await socket.to(currentUser.id).emit("sendFriendList",[await userModel.findOne(
+                    {userName:currentUser.friends[i]}),chatRoom]);
+            }
         }
     }
 
@@ -135,15 +140,9 @@ io.on('connection',function(socket){
         try{
             const bothUser =await addFriend.accept(data);
             socket.emit("deleteFriendlist");
-            for(let i = 0;i < bothUser.sender.friends.length;i++){
-                await socket.emit("sendFriendList",await userModel.findOne(
-                    {userName:bothUser.sender.friends[i]}));
-            }
+            await takeFriendlist(bothUser.sender.userName);
             socket.to(bothUser.receiver.id).emit("deleteFriendlistOther",data.sender);
-            for(let i = 0;i < bothUser.sender.friends.length;i++){
-                await socket.to(bothUser.receiver.id).emit("sendFriendList",await userModel.findOne(
-                    {userName:bothUser.receiver.friends[i]}));
-            }
+            await takeFriendlist(bothUser.receiver.userName);
             await takeFriendReq(data.sender);
         }catch(error){
             console.error(error);
@@ -165,7 +164,6 @@ io.on('connection',function(socket){
     });
     socket.on("chat",async (data)=>{
         socket.emit("enterSendchat",{receiver:data.receiver,text:data.text});
-
 
         let chatDocument = await chats.findOne({
             users: [data.sender , data.receiver]
@@ -192,8 +190,9 @@ io.on('connection',function(socket){
                 {users:[data.receiver ,data.sender]});
         }
         const receiver =  await userModel.findOne({userName:data.receiver});
+        const sender =  await userModel.findOne({userName:data.sender});
         
-        socket.to(receiver.id).emit("sendChattoOther",{sender:data.sender,receiver:receiver,chatRoom:chatRoom});
+        socket.to(receiver.id).emit("sendChattoOther",{sender:sender,receiver:receiver,chatRoom:chatRoom});
         
     });
 
