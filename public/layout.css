@@ -206,6 +206,7 @@ form{
     height: 10px;
     background-color: var(--yellow);
     border-radius: 100%;
+    display: none;
 }
 
 #friendLoading{
