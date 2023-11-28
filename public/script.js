@@ -148,7 +148,7 @@ socket.on("sendChattoOther",(data)=>{
     });
 
     $("#newChatnoti"+data.sender.userName).css({
-        "display":"none"
+        "display":"block"
     });
     
     });
