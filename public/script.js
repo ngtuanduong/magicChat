@@ -143,7 +143,8 @@ socket.on("sendChattoOther",(data)=>{
     console.log(data.receiver.userName);
     $("#demoText"+data.sender.userName).text(data.chatRoom.chat[data.chatRoom.chat.length-1]);
     $("#demoText"+data.sender.userName).css({
-        "font-weight":"bold"
+        "font-weight":"bold",
+        "font-size":"13px"
     });
     
     });
@@ -258,7 +259,8 @@ $(document).ready(function(){
         console.log("button clicked");
         const receiver = $(this).find(".friendName").text();
         $("#demoText"+ receiver).css({
-            "font-weight":"100"
+            "font-weight":"200",
+            "font-size":"10px"
         });
         socket.emit("friendchoose",{
             sender:$("#userName").text(),
