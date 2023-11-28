@@ -194,7 +194,7 @@ form{
 
 .demoText{
     color: var(--yellow-light);
-    font-size: 10px;
+    font-size: 12px;
     max-width: 80%;
     white-space: nowrap;
     overflow: hidden;

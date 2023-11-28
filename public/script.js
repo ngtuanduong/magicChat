@@ -260,7 +260,7 @@ $(document).ready(function(){
         const receiver = $(this).find(".friendName").text();
         $("#demoText"+ receiver).css({
             "font-weight":"200",
-            "font-size":"10px"
+            "font-size":"12px"
         });
         socket.emit("friendchoose",{
             sender:$("#userName").text(),
