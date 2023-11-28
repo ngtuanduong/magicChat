@@ -90,6 +90,8 @@ socket.on("sendFriendList",(data)=>{
     setTimeout(function() {
         $("#friendLoading").hide();
       }, 1000);
+    console.log(data[1].chat[data[1].chat.length -1])
+    console.log(typeof data[1].chat[data[1].chat.length -1])
     if(data[1].chat[data[1].chat.length -1] == ""){
         if(data[1].chatOrder[data[1].chatOrder.length -1] == $("#userName").text()){
             $("#friend-list").append(
