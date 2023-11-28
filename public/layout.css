@@ -202,8 +202,8 @@ form{
 }
 
 .newChatnoti{
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
     background-color: var(--yellow);
     border-radius: 100%;
 }
