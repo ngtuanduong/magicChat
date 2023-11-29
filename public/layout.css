@@ -394,6 +394,7 @@ form{
     padding: 5px;
     border-radius: 20px;
     max-width: 300px;
+    color: white;
 }
 #message-typing{
     position: absolute;
