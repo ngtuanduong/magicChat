@@ -395,6 +395,7 @@ form{
     border-radius: 40px;
     padding: 5px 10px;
     max-width: 200px;
+    word-wrap: break-word;
 }
 .chatTextBlue{
     background-color: #F0F2F5;
@@ -403,7 +404,7 @@ form{
     background-color: dodgerblue;
     color: #F0F2F5;
     max-width: 200px;
-    
+    word-wrap: break-word;
     
 }
 
