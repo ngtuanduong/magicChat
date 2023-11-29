@@ -382,7 +382,6 @@ form{
     flex-direction: row-reverse;
     gap: 10px;
     align-items: center;
-    max-width: 200px;
 }
 .message-block{
     background-color: white;
