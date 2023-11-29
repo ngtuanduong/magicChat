@@ -386,14 +386,14 @@ form{
 .message-block{
     background-color: white;
     padding: 5px;
-    border-radius: 5px;
-    max-width: 200px;
+    border-radius: 20px;
+    max-width: 300px;
 }
 .message-block-blue{
     background-color: dodgerblue;
     padding: 5px;
-    border-radius: 5px;
-    max-width: 200px;
+    border-radius: 20px;
+    max-width: 300px;
 }
 #message-typing{
     position: absolute;
