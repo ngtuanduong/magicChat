@@ -157,7 +157,7 @@ socket.on("sendChattoOther",(data)=>{
             for(let i = 0 ; i < data.chatRoom.chatOrder.length;i++){
                     if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
                         $(".messages-box").append(
-                          "<div class='message-reverse'><div class='message-block><span class = 'chatTextBlue'>" +
+                          "<div class='message-reverse'> <div class='message-block'><span class = 'chatTextBlue'>" +
                             data.chatRoom.chat[i] +
                             " </span></div></div>"
                         );

@@ -392,14 +392,14 @@ form{
 }
 .chatText{
     background-color: #F0F2F5;
-    border-radius: 40px;
+    border-radius: 10%;
     padding: 5px 10px;
     max-width: 200px;
     word-wrap: break-word;
 }
 .chatTextBlue{
     background-color: #F0F2F5;
-    border-radius: 40px;
+    border-radius: 10%;
     padding: 5px 10px;
     background-color: dodgerblue;
     color: #F0F2F5;
