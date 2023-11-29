@@ -386,13 +386,13 @@ form{
 .message-block{
     background-color: white;
     padding: 5px;
-    border-radius: 20px;
+    border-radius: 10px;
     max-width: 300px;
 }
 .message-block-blue{
     background-color: dodgerblue;
     padding: 5px;
-    border-radius: 20px;
+    border-radius: 10px;
     max-width: 300px;
     color: white;
 }
