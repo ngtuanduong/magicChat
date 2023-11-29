@@ -184,7 +184,7 @@ socket.on("updateHeadName",(data)=>{
 
 socket.on("enterSendchat",(data)=>{
     $(".messages-box").append(
-        "<div class='message-reverse'><div class = 'chat-block-blue'>" +
+        "<div class='message-reverse'><div class = 'message-block-blue'>" +
           data.text +
           " </div></div>"
       );
