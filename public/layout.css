@@ -375,7 +375,6 @@ form{
     display: flex;
     gap: 10px;
     align-items: center;
-    max-width: 200px;
 }
 .message-reverse{
     margin-top:5px;
@@ -383,9 +382,14 @@ form{
     flex-direction: row-reverse;
     gap: 10px;
     align-items: center;
-    max-width: 200px;
 }
-
+.message-block{
+    background-color: #F0F2F5;
+    width: fit-content;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 300px;
+}
 .chatText{
     background-color: #F0F2F5;
     border-radius: 40px;

@@ -157,9 +157,9 @@ socket.on("sendChattoOther",(data)=>{
             for(let i = 0 ; i < data.chatRoom.chatOrder.length;i++){
                     if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
                         $(".messages-box").append(
-                          "<div class='message-reverse'><span class = 'chatTextBlue'>" +
+                          "<div class='message-reverse'><div class='message-block><span class = 'chatTextBlue'>" +
                             data.chatRoom.chat[i] +
-                            " </span></div>"
+                            " </span></div></div>"
                         );
                         $(".messages-box").scrollTop(100000000000000);
                       } else {
@@ -167,9 +167,9 @@ socket.on("sendChattoOther",(data)=>{
                           "<div class='message'><img class = 'avatar' src='" +
                             data.receiver.avatarUrl +
                             "'>" +
-                            "<span class = 'chatText'>" +
+                            "<div class='message-block'><span class = 'chatText'>" +
                             data.chatRoom.chat[i] +
-                            " </span></div>"
+                            " </span></div></div>"
                         );
                         $(".messages-box").scrollTop(100000000000000);
                       }
