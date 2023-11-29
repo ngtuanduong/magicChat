@@ -425,7 +425,6 @@ form{
 }
 #send-button{
     background-color: transparent;
-    width: 10%;
     outline: 0;
     border: 0;
     position: relative;
@@ -439,5 +438,6 @@ form{
 .smallIcon{
     width: 25px;
     height: 25px;
-    
+    cursor: pointer;
+
 }
