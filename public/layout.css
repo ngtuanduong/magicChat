@@ -406,7 +406,8 @@ form{
 
 .image-area{
     width: 100%;
-    height: 100px;
+    height: 70px;
+    padding: 10px;
     display: flex;
     align-items: center;
     background-color: var(--yellow);
