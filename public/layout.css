@@ -385,14 +385,19 @@ form{
     align-items: center;
     max-width: 200px;
 }
-.message-block{
+.message-block-blue{
     background-color: #F0F2F5;
-    /* width: fit-content; */
     padding: 5px;
     border-radius: 5px;
     max-width: 200px;
 }
-.chatText{
+.message-block-blue{
+    background-color: dodgerblue;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 200px;
+}
+/* .chatText{
     background-color: #F0F2F5;
     border-radius: 10%;
     padding: 5px 10px;
@@ -408,7 +413,7 @@ form{
     max-width: 200px;
     word-wrap: break-word;
     
-}
+} */
 
 #message-typing{
     position: absolute;
