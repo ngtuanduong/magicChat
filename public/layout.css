@@ -375,7 +375,6 @@ form{
     display: flex;
     gap: 10px;
     align-items: center;
-    max-width: 200px;
 }
 .message-reverse{
     margin-top:5px;
@@ -397,7 +396,6 @@ form{
     border-radius: 5px;
     max-width: 200px;
 }
-
 #message-typing{
     position: absolute;
     bottom: 11%;
