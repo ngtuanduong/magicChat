@@ -172,6 +172,7 @@ io.on('connection',function(socket){
         socket.to(result.receiver.id).emit("sendChattoOther",result);
         
     });
+    socket.on("");
 
  
 
