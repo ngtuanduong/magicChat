@@ -4,15 +4,15 @@ const userModel = require("../models/user");
 
 async function addFriend(data) {
     try{
-        const sender = await userModel.findOne({ userName: data.sender });
-        const receiver = await userModel.findOne({ userName: data.receiver });
+        const sender = await userModel.findOne({ userName: data.senderName });
+        const receiver = await userModel.findOne({ userName: data.receiverName });
         if (receiver) {
             if(sender.friends.indexOf(receiver.userName)){
                 await userModel.updateOne(
-                { userName: data.receiver },
-                { $addToSet: { friendsRequest: data.sender } }
+                { userName: data.receiverName },
+                { $addToSet: { friendsRequest: data.senderName } }
                 );
-                const receiver = await userModel.findOne({ userName: data.receiver });
+                const receiver = await userModel.findOne({ userName: data.receiverName });
                 const firstReqUserName = receiver.friendsRequest[0];
                 const firstReqUser = await userModel.findOne({
                 userName: firstReqUserName,
@@ -45,24 +45,24 @@ async function takeFriendReq(data) {
 
 async function accept(data) {
     await userModel.findOne(
-        { userName: data.sender }).updateOne(
+        { userName: data.senderName }).updateOne(
             { },
-            { $pull: { friendsRequest: data.receiver } }
+            { $pull: { friendsRequest: data.receiverName } }
         );
     await userModel.updateOne(
-            { userName: data.sender },
-            { $addToSet: { friends: data.receiver } }
+            { userName: data.senderName },
+            { $addToSet: { friends: data.receiverName } }
     );
     await userModel.updateOne(
-        { userName: data.receiver },
-        { $addToSet: { friends: data.sender } }
+        { userName: data.receiverName },
+        { $addToSet: { friends: data.senderName } }
     );
-    const chat =  new chats({ users: [data.sender,data.receiver],chatOrder:[], chat:[] });
+    const chat =  new chats({ users: [data.senderName,data.receiverName],chatOrder:[], chat:[] });
     chat.save();
 
     return {
-        sender: await userModel.findOne({userName:data.sender}),
-        receiver: await userModel.findOne({userName:data.receiver})
+        sender: await userModel.findOne({userName:data.senderName}),
+        receiver: await userModel.findOne({userName:data.receiverName})
     } 
     
 

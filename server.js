@@ -8,7 +8,7 @@ const login = require('./modules/login');
 const mongodb = require('./modules/mongo');
 const addFriend = require('./modules/addFriend');
 const chats = require('./models/chats');
-
+const updateChat = require('./modules/updateChat');
 
 
 
@@ -84,11 +84,12 @@ io.on('connection',function(socket){
     });
 
     socket.on("addFriend",async (data)=>{
-        if(data.sender == data.receiver){
+        if(data.senderName == data.receiverName){
             socket.emit("selfAdd");
         }
         else{
             const result = await addFriend.addFriend(data);
+            console.log(result);
             if(typeof result == 'object'){
                 socket.emit("sendAddSuccess"),
                 socket.to(result.receiver.id).emit("sendAddFrriendtoFriend",{requests:result.receiver.friendsRequest.length,firstReqUser:result.firstReqUser});
@@ -96,7 +97,7 @@ io.on('connection',function(socket){
             else if(result){
                 socket.emit("alreadyAdd");
             }else{
-                socket.emit("sendAddFailed",data.receiver);
+                socket.emit("sendAddFailed",data.receiverName);
             }
         }
     });
@@ -111,16 +112,16 @@ io.on('connection',function(socket){
             console.log(error);
         }
     }
-    socket.on("takeFriendReq",(data) => takeFriendReq(data));
-
-    async function takeFriendlist (data){
-        const currentUser = await userModel.findOne({userName:data});
+    
+    socket.on("takeFriendReq",(userName) => takeFriendReq(userName));
+    async function takeFriendlist (userName){
+        const currentUser = await userModel.findOne({userName:userName});
         for(let i = 0;i < currentUser.friends.length;i++){
             let chatRoom = await chats.findOne(
-                {users:[data ,currentUser.friends[i]]});
+                {users:[userName ,currentUser.friends[i]]});
             if(!chatRoom){
                 chatRoom = await chats.findOne(
-                    {users:[currentUser.friends[i] ,data]});
+                    {users:[currentUser.friends[i] ,userName]});
             }
             if(currentUser.id == socket.id){
                 await socket.emit("sendFriendList",[await userModel.findOne(
@@ -141,61 +142,38 @@ io.on('connection',function(socket){
             const bothUser =await addFriend.accept(data);
             socket.emit("deleteFriendlist");
             await takeFriendlist(bothUser.sender.userName);
-            socket.to(bothUser.receiver.id).emit("deleteFriendlistOther",data.sender);
+            socket.to(bothUser.receiver.id).emit("deleteFriendlistOther",data.senderName);
             await takeFriendlist(bothUser.receiver.userName);
-            await takeFriendReq(data.sender);
+            await takeFriendReq(data.senderName);
         }catch(error){
             console.error(error);
         }
     });
 
     socket.on("friendchoose",async (data)=>{
-        console.log(data);
         let chatRoom = await chats.findOne(
-            {users:[data.sender ,data.receiver]});
+            {users:[data.senderName ,data.receiverName]});
         if(!chatRoom){
             chatRoom = await chats.findOne(
-                {users:[data.receiver ,data.sender]});
+                {users:[data.receiverName ,data.senderName]});
         }
-        const receiver = await userModel.findOne({userName:data.receiver})
+        const receiver = await userModel.findOne({userName:data.receiverName})
         socket.emit("updateHeadName",receiver);
         socket.emit("sendChat",{receiver:receiver,chatRoom:chatRoom});
         
     });
     socket.on("chat",async (data)=>{
-        socket.emit("enterSendchat",{receiver:data.receiver,text:data.text});
-
-        let chatDocument = await chats.findOne({
-            users: [data.sender , data.receiver]
-          });
-        if(!chatDocument){
-            chatDocument = await chats.findOne({
-                users: [data.receiver , data.sender]
-              });
-        }          
-        if (chatDocument) {
-        await chats.updateOne(
-            { _id: chatDocument._id }, // Assuming you have an _id field for identifying the document
-            { $push: { chat: data.text } }
-        );
-        await chats.updateOne(
-            { _id: chatDocument._id }, // Assuming you have an _id field for identifying the document
-            { $push: { chatOrder: data.sender} }
-            );
-        }
-        let chatRoom = await chats.findOne(
-            {users:[data.sender ,data.receiver]});
-        if(!chatRoom){
-            chatRoom = await chats.findOne(
-                {users:[data.receiver ,data.sender]});
-        }
-        const receiver =  await userModel.findOne({userName:data.receiver});
-        const sender =  await userModel.findOne({userName:data.sender});
-        
-        socket.to(receiver.id).emit("sendChattoOther",{sender:sender,receiver:receiver,chatRoom:chatRoom});
+        console.log(data.image);
+        socket.emit("enterSendchat",{receiverName:data.receiverName,text:data.text,image:data.image});
+        const result = await updateChat.updateChat(data);
+        console.log("result: " +result.sender);
+        console.log("result: " +result.receiver);
+        console.log("result: " +result.chatRoom);
+        socket.to(result.receiver.id).emit("sendChattoOther",result);
         
     });
 
+ 
 
 });
 

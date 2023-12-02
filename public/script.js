@@ -1,5 +1,5 @@
-// const socket = io("http://localhost:3000");
-const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
+const socket = io("http://localhost:3000");
+// const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
 
 
 function displayImage() {
@@ -19,6 +19,70 @@ function displayImage() {
     }
 
 }
+
+function handleImageUpload() {
+    var input = document.getElementById('fileInput');
+    var imageArea = document.getElementById('image-area');
+ 
+    // Clear existing images
+    imageArea.innerHTML = '';
+ 
+    var files = input.files;
+    
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+ 
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // Create a div for each image
+                var imageItem = document.createElement('div');
+                imageItem.className = 'image-item';
+                
+                // Create an img element
+                var img = document.createElement('img');
+                img.alt = 'Uploaded Image';
+                img.src = e.target.result;
+                img.className = 'imageLoaded';
+                $("#image-area").css(
+                    {"display":"flex"}
+                );
+                $("#messages-box").css(
+                    {"height" : "60%"}
+                );
+                // Create a button (SVG) to remove the image
+                var closeButton = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                closeButton.setAttribute('class', 'x-button');
+                closeButton.setAttribute('width', '15');
+                closeButton.setAttribute('height', '15');
+                closeButton.setAttribute('fill', 'currentColor');
+                closeButton.setAttribute('viewBox', '0 0 17 17');
+
+                var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute('d', 'M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z');
+                
+                closeButton.appendChild(path);
+                
+                // Add the img and closeButton to the imageItem
+                imageItem.appendChild(img);
+                imageItem.appendChild(closeButton);
+ 
+                // Append the imageItem to the imageArea
+                imageArea.appendChild(imageItem);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+}
+
+function getImageUrls() {
+    let imageUrls = [];
+    $('#image-area .image-item .imageLoaded').each(function () {
+        imageUrls.push($(this).attr('src'));
+    });
+    return imageUrls;
+}
+ 
 
 socket.on("usernameExisted",(data)=>{
     alert("Username had been taken: " + data );
@@ -90,6 +154,7 @@ socket.on("sendFriendList",(data)=>{
     setTimeout(function() {
         $("#friendLoading").hide();
       }, 1000);
+      console.log(data);
     if(data[1].chat.length == 0){
         if(data[1].chatOrder[data[1].chatOrder.length -1] == $("#userName").text()){
             $("#friend-list").append(
@@ -116,32 +181,55 @@ socket.on("sendFriendList",(data)=>{
 });
 
 socket.on("sendChattoOther",(data)=>{
+    console.log(data);
+    console.log(data.sender.userName == $("#currentFriendname").text());
     if(data.sender.userName == $("#currentFriendname").text()){
         $(".messages-box").html("");
         for(let i = 0 ; i < data.chatRoom.chatOrder.length;i++){
+            if(data.chatRoom.chat[i].image[0]){
+            if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
+                $(".messages-box").append(
+                  "<div class='message-reverse'><div class='message-block-blue'>" +
+                    data.chatRoom.chat[i].text + "<br><img class='image' src='"+ data.chatRoom.chat[i].image[0] +"'>"+
+                    "</div></div>"
+                );
+                $(".messages-box").scrollTop(100000000000000);
+              } else {
+                $(".messages-box").append(
+                  "<div class='message'><img class = 'avatar' src='" +
+                    data.receiver.avatarUrl +
+                    "'>" +
+                    "<div class='message-block'>" +
+                    data.chatRoom.chat[i].text + "<br><img class='image' src='"+ data.chatRoom.chat[i].image[0] +"'>"+
+                    " </div></div>"
+                );
+                $(".messages-box").scrollTop(100000000000000);
+              }
+            }else{
                 if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
                     $(".messages-box").append(
-                      "<div class='message-reverse'><span class = 'chatTextBlue'>" +
-                        data.chatRoom.chat[i] +
-                        " </span></div>"
+                      "<div class='message-reverse'><div class='message-block-blue'>" +
+                        data.chatRoom.chat[i].text +
+                        "</div></div>"
                     );
                     $(".messages-box").scrollTop(100000000000000);
                   } else {
                     $(".messages-box").append(
                       "<div class='message'><img class = 'avatar' src='" +
-                        data.sender.avatarUrl +
+                        data.receiver.avatarUrl +
                         "'>" +
-                        "<span class = 'chatText'>" +
-                        data.chatRoom.chat[i] +
-                        " </span></div>"
+                        "<div class='message-block'>" +
+                        data.chatRoom.chat[i].text + 
+                        " </div></div>"
                     );
                     $(".messages-box").scrollTop(100000000000000);
                   }
+            }
         }
 
     }
     console.log(data.receiver.userName);
-    $("#demoText"+data.sender.userName).text(data.chatRoom.chat[data.chatRoom.chat.length-1]);
+    $("#demoText"+data.sender.userName).text(data.chatRoom.chat[data.chatRoom.chat.length-1].text);
     $("#demoText"+data.sender.userName).css({
         "font-weight":"bold",
         "font-size":"13px"
@@ -155,10 +243,11 @@ socket.on("sendChattoOther",(data)=>{
     socket.on("sendChat",(data)=>{
             $(".messages-box").html("");
             for(let i = 0 ; i < data.chatRoom.chatOrder.length;i++){
+                if(data.chatRoom.chat[i].image[0]){
                     if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
                         $(".messages-box").append(
                           "<div class='message-reverse'><div class='message-block-blue'>" +
-                            data.chatRoom.chat[i] +
+                            data.chatRoom.chat[i].text+ "<br><img class='image' src='" + data.chatRoom.chat[i].image[0] +"'>"+
                             "</div></div>"
                         );
                         $(".messages-box").scrollTop(100000000000000);
@@ -168,11 +257,32 @@ socket.on("sendChattoOther",(data)=>{
                             data.receiver.avatarUrl +
                             "'>" +
                             "<div class='message-block'>" +
-                            data.chatRoom.chat[i] +
+                            data.chatRoom.chat[i].text+ "<br><img class='image' src='" + data.chatRoom.chat[i].image[0] +"'>"+
                             " </div></div>"
                         );
                         $(".messages-box").scrollTop(100000000000000);
                       }
+                    }
+                    else{
+                        if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
+                            $(".messages-box").append(
+                              "<div class='message-reverse'><div class='message-block-blue'>" +
+                                data.chatRoom.chat[i].text+
+                                "</div></div>"
+                            );
+                            $(".messages-box").scrollTop(100000000000000);
+                          } else {
+                            $(".messages-box").append(
+                              "<div class='message'><img class = 'avatar' src='" +
+                                data.receiver.avatarUrl +
+                                "'>" +
+                                "<div class='message-block'>" +
+                                data.chatRoom.chat[i].text+
+                                " </div></div>"
+                            );
+                            $(".messages-box").scrollTop(100000000000000);
+                          }
+                    }
                 }
         
         });
@@ -183,14 +293,25 @@ socket.on("updateHeadName",(data)=>{
 )});
 
 socket.on("enterSendchat",(data)=>{
-    $(".messages-box").append(
-        "<div class='message-reverse'><div class = 'message-block-blue'>" +
-          data.text +
-          " </div></div>"
-      );
+    console.log( data.image);
+    if(data.image.length != 0){
+        $(".messages-box").append(
+            "<div class='message-reverse'><div class = 'message-block-blue'>" +
+              data.text + "<br><img class='image' src='"+ data.image +"'>"+
+              " </div></div>"
+          );
+    }else{
+        $(".messages-box").append(
+            "<div class='message-reverse'><div class = 'message-block-blue'>" +
+              data.text +
+              " </div></div>"
+          );
+    }
+    
       $(".messages-box").scrollTop(100000000000000);
     
-      $("#demoText"+data.receiver).text("You: " + data.text);
+      $("#demoText"+data.receiverName).text("You: " + data.text);
+      
 });
 
 
@@ -243,9 +364,11 @@ $(document).ready(function(){
         var key = e.which;
         if (key == 13) {
             // the enter key code
+            console.log($("#userName").text())
+            console.log($("#search").val())
             socket.emit("addFriend", {
-            sender:$("#userName").text(),
-            receiver:$("#search").val()
+            senderName:$("#userName").text(),
+            receiverName:$("#search").val()
             });
           return false;
         }
@@ -254,24 +377,24 @@ $(document).ready(function(){
     $("#friendReqBox").on('click',"#acceptBtn",()=>{
         console.log("button clicked");
         socket.emit("accept",{
-            sender:$("#userName").text(),
-            receiver:$("#requestName").text()
+            senderName:$("#userName").text(),
+            receiverName:$("#requestName").text()
         });
         $("#friendReqBox").html("");
     });
     $("#friend-list").on('click',".friend",function(){
         console.log("button clicked");
-        const receiver = $(this).find(".friendName").text();
-        $("#demoText"+ receiver).css({
+        const receiverName = $(this).find(".friendName").text();
+        $("#demoText"+ receiverName).css({
             "font-weight":"200",
             "font-size":"12px"
         });
-        $("#newChatnoti"+receiver).css({
+        $("#newChatnoti"+receiverName).css({
             "display":"none"
         });
         socket.emit("friendchoose",{
-            sender:$("#userName").text(),
-            receiver: receiver
+            senderName:$("#userName").text(),
+            receiverName: receiverName
         });
         
     });
@@ -280,33 +403,45 @@ $(document).ready(function(){
         if(key == 13){
             console.log("key pressed");
             const text = $("#chat-box").val();
-            const sender = $("#userName").text();
-            const receiver = $("#currentFriendname").text();
-            if(receiver == ""){
+            const senderName = $("#userName").text();
+            let image = [];
+            const receiverName = $("#currentFriendname").text();
+            if ($('#image-area .image-item').length > 0) {
+                image =  getImageUrls();
+            }   
+            if(receiverName == ""){
                 alert("Please add friends and chat to them!");
             }
-            else if(text == ""){
+            else if(text == "" && image.length == 0){
                 return false;
             }
             else{
-                console.log(sender);
-                console.log(receiver);
+                console.log($('#image-area .image-item').length);
+                console.log(image);
                 socket.emit("chat",{
-                    sender:sender,
-                    receiver:receiver,
-                    text:text
+                    senderName:senderName,
+                    receiverName:receiverName,
+                    text:text,
+                    image:image
                 });
-            $("#chat-box").val("");
+                $('#image-area').html("");
+                $("#image-area").css(
+                    {"display" : "none"}
+                );
+                $("#messages-box").css(
+                    {"height" : "80%"}
+                )
+                $("#chat-box").val("");
+                e.preventDefault();
+                return false;
             }
-            e.preventDefault();
-            return false;
-        }
+            }
     });
     $("#send-button").click(()=>{
         console.log("key pressed");
         const text = $("#chat-box").val();
-        const sender = $("#userName").text();
-        const receiver = $("#currentFriendname").text();
+        const senderName = $("#userName").text();
+        const receiverName = $("#currentFriendname").text();
         if(receiver == ""){
             alert("Please add friends and chat to them!");
         }
@@ -317,8 +452,8 @@ $(document).ready(function(){
             console.log(sender);
             console.log(receiver);
             socket.emit("chat",{
-                sender:sender,
-                receiver:receiver,
+                senderName:senderName,
+                receiverName:receiverName,
                 text:text
             });
         $("#chat-box").val("");
