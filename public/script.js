@@ -1,5 +1,5 @@
-const socket = io("http://localhost:3000");
-// const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
+// const socket = io("http://localhost:3000");
+const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
 
 
 function displayImage() {
