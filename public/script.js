@@ -197,7 +197,7 @@ socket.on("sendChattoOther",(data)=>{
               } else {
                 $(".messages-box").append(
                   "<div class='message'><img class = 'avatar' src='" +
-                    data.receiver.avatarUrl +
+                    data.sender.avatarUrl +
                     "'>" +
                     "<div class='message-block'>" +
                     data.chatRoom.chat[i].text + "<br><img class='image' src='"+ data.chatRoom.chat[i].image[0] +"'>"+
