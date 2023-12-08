@@ -164,7 +164,13 @@ io.on('connection',function(socket){
     });
     socket.on("chat",async (data)=>{
         console.log(data.image);
-        socket.emit("enterSendchat",{receiverName:data.receiverName,text:data.text,image:data.image});
+        let cloudinaryResponse = [];
+        if(data.image.length > 0){
+            const fileName = `${Date.now()}_image.png`;
+            fs.writeFileSync(fileName, data.image[0], 'base64');
+            cloudinaryResponse = await cloudinary.uploader.upload(fileName);
+        }
+        socket.emit("enterSendchat",{receiverName:data.receiverName,text:data.text,image:cloudinaryResponse.secure_url});
         const result = await updateChat.updateChat(data);
         console.log("result: " +result.sender);
         console.log("result: " +result.receiver);

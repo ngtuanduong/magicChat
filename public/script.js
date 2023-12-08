@@ -1,5 +1,6 @@
 // const socket = io("http://localhost:3000");
-const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
+// const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
+const socket = io("https://duo11.github.io/magicChat/");
 
 
 function displayImage() {
@@ -43,6 +44,8 @@ function handleImageUpload() {
                 var img = document.createElement('img');
                 img.alt = 'Uploaded Image';
                 img.src = e.target.result;
+                img.alt = reader.result.split(',')[1];
+
                 img.className = 'imageLoaded';
                 $("#image-area").css(
                     {"display":"flex"}
@@ -78,7 +81,7 @@ function handleImageUpload() {
 function getImageUrls() {
     let imageUrls = [];
     $('#image-area .image-item .imageLoaded').each(function () {
-        imageUrls.push($(this).attr('src'));
+        imageUrls.push($(this).attr('alt'));
     });
     return imageUrls;
 }
@@ -154,7 +157,6 @@ socket.on("sendFriendList",(data)=>{
     setTimeout(function() {
         $("#friendLoading").hide();
       }, 1000);
-      console.log(data);
     if(data[1].chat.length == 0){
         if(data[1].chatOrder[data[1].chatOrder.length -1] == $("#userName").text()){
             $("#friend-list").append(
@@ -186,11 +188,11 @@ socket.on("sendChattoOther",(data)=>{
     if(data.sender.userName == $("#currentFriendname").text()){
         $(".messages-box").html("");
         for(let i = 0 ; i < data.chatRoom.chatOrder.length;i++){
-            if(data.chatRoom.chat[i].image[0]){
+            if(data.chatRoom.chat[i].image){
             if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
                 $(".messages-box").append(
                   "<div class='message-reverse'><div class='message-block-blue'>" +
-                    data.chatRoom.chat[i].text + "<br><img class='image' src='"+ data.chatRoom.chat[i].image[0] +"'>"+
+                    data.chatRoom.chat[i].text + "<br><img class='image' src='"+ data.chatRoom.chat[i].image +"'>"+
                     "</div></div>"
                 );
                 $(".messages-box").scrollTop(100000000000000);
@@ -200,7 +202,7 @@ socket.on("sendChattoOther",(data)=>{
                     data.sender.avatarUrl +
                     "'>" +
                     "<div class='message-block'>" +
-                    data.chatRoom.chat[i].text + "<br><img class='image' src='"+ data.chatRoom.chat[i].image[0] +"'>"+
+                    data.chatRoom.chat[i].text + "<br><img class='image' src='"+ data.chatRoom.chat[i].image +"'>"+
                     " </div></div>"
                 );
                 $(".messages-box").scrollTop(100000000000000);
@@ -243,11 +245,11 @@ socket.on("sendChattoOther",(data)=>{
     socket.on("sendChat",(data)=>{
             $(".messages-box").html("");
             for(let i = 0 ; i < data.chatRoom.chatOrder.length;i++){
-                if(data.chatRoom.chat[i].image[0]){
+                if(data.chatRoom.chat[i].image){
                     if (data.chatRoom.chatOrder[i] == $("#userName").text()) {
                         $(".messages-box").append(
                           "<div class='message-reverse'><div class='message-block-blue'>" +
-                            data.chatRoom.chat[i].text+ "<br><img class='image' src='" + data.chatRoom.chat[i].image[0] +"'>"+
+                            data.chatRoom.chat[i].text+ "<br><img class='image' src='" + data.chatRoom.chat[i].image +"'>"+
                             "</div></div>"
                         );
                         $(".messages-box").scrollTop(100000000000000);
@@ -257,7 +259,7 @@ socket.on("sendChattoOther",(data)=>{
                             data.receiver.avatarUrl +
                             "'>" +
                             "<div class='message-block'>" +
-                            data.chatRoom.chat[i].text+ "<br><img class='image' src='" + data.chatRoom.chat[i].image[0] +"'>"+
+                            data.chatRoom.chat[i].text+ "<br><img class='image' src='" + data.chatRoom.chat[i].image +"'>"+
                             " </div></div>"
                         );
                         $(".messages-box").scrollTop(100000000000000);
@@ -294,7 +296,7 @@ socket.on("updateHeadName",(data)=>{
 
 socket.on("enterSendchat",(data)=>{
     console.log( data.image);
-    if(data.image.length != 0){
+    if(data.image){
         $(".messages-box").append(
             "<div class='message-reverse'><div class = 'message-block-blue'>" +
               data.text + "<br><img class='image' src='"+ data.image +"'>"+
