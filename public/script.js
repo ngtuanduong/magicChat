@@ -1,4 +1,5 @@
-const socket = io("https://magichat.onrender.com/");
+// const socket = io("https://magichat.onrender.com/");
+const socket = io("http://localhost:3000/")
 
 function displayImage() {
     var input = document.getElementById('fileInput');
@@ -168,11 +169,11 @@ socket.on("sendFriendList",(data)=>{
     else{
         if(data[1].chatOrder[data[1].chatOrder.length -1] == $("#userName").text()){
             $("#friend-list").append(
-                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName +"'>"+ "You: " + data[1].chat[data[1].chat.length -1] +"</p></div><div class='newChatnoti' id='"+ "newChatnoti" + data[0].userName +"'></div></div>"
+                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName +"'>"+ "You: " + data[1].chat[data[1].chat.length -1].text +"</p></div><div class='newChatnoti' id='"+ "newChatnoti" + data[0].userName +"'></div></div>"
             )
         }else{
             $("#friend-list").append(
-                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName +"'>"+ data[1].chat[data[1].chat.length -1] +"</p></div><div class='newChatnoti' id='"+ "newChatnoti" + data[0].userName +"'></div></div>"
+                "<div class='friend'><img class='avatar' src='"+ data[0].avatarUrl +"' alt='friend'><div class='rightReq'><span class='friendName'>"+ data[0].userName +"</span><p class='demoText' id='"+ "demoText" + data[0].userName +"'>"+ data[1].chat[data[1].chat.length -1].text +"</p></div><div class='newChatnoti' id='"+ "newChatnoti" + data[0].userName +"'></div></div>"
             )
         }
     }
