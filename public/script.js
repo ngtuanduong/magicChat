@@ -1,7 +1,4 @@
-// const socket = io("http://localhost:3000");
-// const socket = io("https://chatwithmongo-9adb3ba69bcd.herokuapp.com/");
-const socket = io("https://duo11.github.io/magicChat/");
-
+const socket = io("https://magichat.onrender.com/");
 
 function displayImage() {
     var input = document.getElementById('fileInput');
