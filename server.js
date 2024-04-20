@@ -47,12 +47,6 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 http.listen(process.env.PORT || 3000,()=>{    
     console.log("server start on port 3000")});
-// app.listen(3000,()=>{
-//     console.log("server start on port 3000");
-// })
-
-
-
 
 io.on('connection',function(socket){
     socket.on("client-send-signUp",async (data)=>{
@@ -114,6 +108,7 @@ io.on('connection',function(socket){
     }
     
     socket.on("takeFriendReq",(userName) => takeFriendReq(userName));
+    
     async function takeFriendlist (userName){
         const currentUser = await userModel.findOne({userName:userName});
         for(let i = 0;i < currentUser.friends.length;i++){
@@ -179,7 +174,6 @@ io.on('connection',function(socket){
         
     });
 
- 
 
 });
 

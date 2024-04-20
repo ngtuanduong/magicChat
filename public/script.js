@@ -1,5 +1,5 @@
-const socket = io("https://magichat.onrender.com/");
-// const socket = io("http://localhost:3000/")
+// const socket = io("https://magichat.onrender.com/");
+const socket = io("http://localhost:3000/")
 
 function displayImage() {
     var input = document.getElementById('fileInput');
@@ -216,7 +216,7 @@ socket.on("sendChattoOther",(data)=>{
                   } else {
                     $(".messages-box").append(
                       "<div class='message'><img class = 'avatar' src='" +
-                        data.receiver.avatarUrl +
+                        data.sender.avatarUrl +
                         "'>" +
                         "<div class='message-block'>" +
                         data.chatRoom.chat[i].text + 
@@ -316,7 +316,7 @@ socket.on("enterSendchat",(data)=>{
 
 
 $(document).ready(function(){
-    $("#friendLoading").hide()
+    $("#friendLoading").hide();
     $("#loadingSignup").hide();
     $("#btnSignup").click(()=>{
         const userName = $("#userNameSignup").val();
