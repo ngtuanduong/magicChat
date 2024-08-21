@@ -1,5 +1,5 @@
-// const socket = io("https://magichat.onrender.com/");
-const socket = io("http://localhost:3000/")
+const socket = io("https://magichat.onrender.com/");
+// const socket = io("http://localhost:3000/")
 
 function displayImage() {
     var input = document.getElementById('fileInput');
